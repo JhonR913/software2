@@ -63,7 +63,6 @@ def admin_panel():
     juegos = sorted(juegos_mongo.union(juegos_csv), key=lambda x: str(x))
     return render_template("admin_index.html", juegos=juegos, generos=generos, plataformas=plataformas)
 
-
 @app.route("/index")
 @login_required
 def index():
@@ -538,6 +537,28 @@ def logout():
     session.pop("rol", None)  # Eliminar también el rol de la sesión
     flash("Has cerrado sesión", "info")
     return redirect(url_for("login"))
+
+
+
+@app.route('/registro-usuario')
+@login_required
+def registro_usuario():
+    return render_template('registro_admin.html')
+
+@app.route('/ingresos-sesion')
+@login_required
+def ingresos_sesion():
+    return render_template('registros.html')
+
+@app.route('/aceptar-juegos')
+@login_required
+def aceptar_juegos():
+    return render_template('revisar_juegos.html')
+
+@app.route('/aceptar-comentarios')
+@login_required
+def aceptar_comentarios():
+    return render_template('revisar_resena.html')
 
 if __name__ == "__main__":
     app.run(debug=True)

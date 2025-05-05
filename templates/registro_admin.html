@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>GamePulse - Gestión de Usuarios</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #1c1c1e;
+            color: white;
+        }
+
+        header {
+            background-color: #111;
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            color: #4CAF50;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 30px;
+            background-color: #2c2c2e;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        label {
+            font-size: 16px;
+            color: #ccc;
+        }
+
+        input, select {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #555;
+            background-color: #1c1c1e;
+            color: white;
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #555;
+            text-align: center;
+        }
+
+        th {
+            background-color: #333;
+            color: #4CAF50;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            font-size: 14px;
+            margin: 0 5px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .edit-btn {
+            background-color: #f0ad4e;
+            color: black;
+            border: none;
+        }
+
+        .delete-btn {
+            background-color: #d9534f;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎮 GamePulse - Gestión de Usuarios</h1>
+    </header>
+
+    <div class="container">
+        <h2>Registrar Nuevo Usuario</h2>
+        <form method="POST" action="/registrar_usuario">
+            <label for="usuario">Usuario:</label>
+            <input type="text" id="usuario" name="usuario" required>
+
+            <label for="correo">Correo:</label>
+            <input type="email" id="correo" name="correo" required>
+
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" id="contraseña" name="contraseña" required>
+
+            <label for="rol">Rol:</label>
+            <select id="rol" name="rol" required>
+                <option value="usuario">Usuario</option>
+                <option value="admin">Administrador</option>
+            </select>
+
+            <button type="submit">Registrar</button>
+        </form>
+
+        <h2>Usuarios Registrados</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Fila de ejemplo, luego será dinámica con backend -->
+                <tr>
+                    <td>admin1</td>
+                    <td>admin@example.com</td>
+                    <td>admin</td>
+                    <td>
+                        <button class="action-btn edit-btn">Editar</button>
+                        <button class="action-btn delete-btn">Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

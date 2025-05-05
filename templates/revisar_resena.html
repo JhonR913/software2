@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>GamePulse - Confirmar Detalles de Juego</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #1c1c1e;
+            color: white;
+        }
+
+        header {
+            background-color: #111;
+            text-align: center;
+            padding: 40px 20px 20px;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            color: #4CAF50;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #2c2c2e;
+            border-radius: 10px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 30px;
+        }
+
+        .game-card {
+            background-color: #333;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+
+        .game-card h3 {
+            color: #4CAF50;
+        }
+
+        .game-card p {
+            margin: 5px 0;
+        }
+
+        .game-card .buttons {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            width: 45%;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button.accept {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button.accept:hover {
+            background-color: #45a049;
+        }
+
+        button.reject {
+            background-color: #d32f2f;
+            color: white;
+        }
+
+        button.reject:hover {
+            background-color: #c62828;
+        }
+
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🎮 GamePulse - Confirmar Detalles del Juego</h1>
+    </header>
+
+    <div class="container">
+        <h2>Detalles de Juego a Confirmar</h2>
+
+        {% for juego in juegos %}
+        <div class="game-card">
+            <h3>{{ juego.nombre }}</h3>
+            <p><strong>ID:</strong> {{ juego._id }}</p>
+            <p><strong>URL:</strong> <a href="{{ juego.url }}" target="_blank">{{ juego.url }}</a></p>
+            <p><strong>Descripción Corta:</strong> {{ juego.desc_snippet }}</p>
+            <p><strong>Reseñas Recientes:</strong> {{ juego.recent_reviews }}</p>
+            <p><strong>Desarrollador:</strong> {{ juego.developer }}</p>
+            <p><strong>Género:</strong> {{ juego.genre }}</p>
+            <p><strong>Precio Original:</strong> {{ juego.original_price }}</p>
+            <p><strong>Precio con Descuento:</strong> {{ juego.discount_price }}</p>
+            
+            <div class="buttons">
+                <button class="accept" onclick="window.location.href='/confirmar/{{ juego._id }}'">Aceptar</button>
+                <button class="reject" onclick="window.location.href='/rechazar/{{ juego._id }}'">Rechazar</button>
+            </div>
+        </div>
+        {% endfor %}
+
+        </div>
+    </div>
+</body>
+</html>
