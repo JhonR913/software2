@@ -116,11 +116,11 @@
             <p><strong>Rating:</strong> {{ juego.Rating }}</p>
             <div class="acciones">
                 <form method="POST" action="/aceptar_juego">
-                    <input type="hidden" name="id" value="{{ juego.id }}">
+                    <input type="hidden" name="id" value="{{ juego._id }}">
                     <button class="btn-aceptar" type="submit">Aceptar</button>
                 </form>
                 <form method="POST" action="/rechazar_juego">
-                    <input type="hidden" name="id" value="{{ juego.id }}">
+                    <input type="hidden" name="id" value="{{ juego._id }}">
                     <button class="btn-rechazar" type="submit">Rechazar</button>
                 </form>
             </div>

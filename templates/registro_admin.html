@@ -119,7 +119,7 @@
 
     <div class="container">
         <h2>Registrar Nuevo Usuario</h2>
-        <form method="POST" action="/registrar_usuario">
+        <form method="POST" action="/registro-usuario">
             <label for="usuario">Usuario:</label>
             <input type="text" id="usuario" name="usuario" required>
 
@@ -149,16 +149,17 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Fila de ejemplo, luego será dinámica con backend -->
+                {% for u in usuarios %}
                 <tr>
-                    <td>admin1</td>
-                    <td>admin@example.com</td>
-                    <td>admin</td>
+                    <td>{{ u.usuario }}</td>
+                    <td>{{ u.correo }}</td>
+                    <td>{{ u.rol }}</td>
                     <td>
                         <button class="action-btn edit-btn">Editar</button>
                         <button class="action-btn delete-btn">Eliminar</button>
                     </td>
                 </tr>
+                {% endfor %}
             </tbody>
         </table>
     </div>

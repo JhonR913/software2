@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>GamePulse - Confirmar Detalles de Juego</title>
+    <title>GamePulse - Reseñas Pendientes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
     <style>
@@ -39,55 +39,36 @@
             margin-bottom: 30px;
         }
 
-        .game-card {
+        .reseña {
             background-color: #333;
-            padding: 15px;
+            padding: 20px;
             margin-bottom: 20px;
             border-radius: 8px;
-            border: 1px solid #444;
         }
 
-        .game-card h3 {
+        .reseña h3 {
             color: #4CAF50;
         }
 
-        .game-card p {
-            margin: 5px 0;
-        }
-
-        .game-card .buttons {
-            margin-top: 15px;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        button {
-            padding: 10px;
+        .reseña p {
+            color: #ccc;
             font-size: 16px;
-            border-radius: 8px;
-            border: none;
-            outline: none;
-            width: 45%;
-            cursor: pointer;
-            transition: 0.3s;
         }
 
-        button.accept {
-            background-color: #4CAF50;
-            color: white;
+        .reseña .calificacion {
+            font-size: 18px;
+            margin-top: 10px;
+            color: #FFD700;
         }
 
-        button.accept:hover {
-            background-color: #45a049;
+        .reseña .detalles {
+            font-size: 14px;
+            color: #bbb;
+            margin-top: 15px;
         }
 
-        button.reject {
-            background-color: #d32f2f;
-            color: white;
-        }
-
-        button.reject:hover {
-            background-color: #c62828;
+        .reseña .detalles div {
+            margin-bottom: 5px;
         }
 
         .nav-buttons {
@@ -96,36 +77,73 @@
             margin-top: 20px;
         }
 
+        .btn-aceptar, .btn-rechazar {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .btn-aceptar {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .btn-aceptar:hover {
+            background-color: #45a049;
+        }
+
+        .btn-rechazar {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .btn-rechazar:hover {
+            background-color: #e53935;
+        }
     </style>
 </head>
 <body>
     <header>
-        <h1>🎮 GamePulse - Confirmar Detalles del Juego</h1>
+        <h1>🎮 GamePulse</h1>
     </header>
 
     <div class="container">
-        <h2>Detalles de Juego a Confirmar</h2>
+        <h2>Reseñas Pendientes de Aprobación</h2>
 
-        {% for juego in juegos %}
-        <div class="game-card">
-            <h3>{{ juego.nombre }}</h3>
-            <p><strong>ID:</strong> {{ juego._id }}</p>
-            <p><strong>URL:</strong> <a href="{{ juego.url }}" target="_blank">{{ juego.url }}</a></p>
-            <p><strong>Descripción Corta:</strong> {{ juego.desc_snippet }}</p>
-            <p><strong>Reseñas Recientes:</strong> {{ juego.recent_reviews }}</p>
-            <p><strong>Desarrollador:</strong> {{ juego.developer }}</p>
-            <p><strong>Género:</strong> {{ juego.genre }}</p>
-            <p><strong>Precio Original:</strong> {{ juego.original_price }}</p>
-            <p><strong>Precio con Descuento:</strong> {{ juego.discount_price }}</p>
-            
-            <div class="buttons">
-                <button class="accept" onclick="window.location.href='/confirmar/{{ juego._id }}'">Aceptar</button>
-                <button class="reject" onclick="window.location.href='/rechazar/{{ juego._id }}'">Rechazar</button>
-            </div>
-        </div>
-        {% endfor %}
+        {% if resenas_pendientes %}
+            {% for resena in resenas_pendientes %}
+                <div class="reseña">
+                    <h3>{{ resena['name'] }}</h3>
+                    <p><strong>Reseña:</strong> {{ resena['reseña'] }}</p>
+                    <div class="calificacion">
+                        <strong>Calificación:</strong> {{ resena['valoracion'] }} Estrellas
+                    </div>
+                    
+                    <!-- Mostrar más detalles de la reseña -->
+                    <div class="detalles">
+                        <div><strong>Autor:</strong> {{ resena['autor'] }}</div>
+                        <div><strong>Fecha:</strong> {{ resena['fecha'] }}</div>
+                        <div><strong>Comentario:</strong> {{ resena['comentario'] }}</div>
+                        <div><strong>Jugabilidad:</strong> {{ resena['jugabilidad'] }}</div>
+                        <div><strong>Historia:</strong> {{ resena['historia'] }}</div>
+                        <div><strong>Gráficos:</strong> {{ resena['graficos'] }}</div>
+                        <div><strong>Sonido:</strong> {{ resena['sonido'] }}</div>
+                        <div><strong>Recomendado:</strong> {{ resena['recomendado'] }}</div>
+                        <div><strong>Usuario ID:</strong> {{ resena['user_id'] }}</div>
+                    </div>
 
-        </div>
+                    <div class="nav-buttons">
+                        <button class="btn-aceptar" onclick="window.location.href='/confirmar_resena/{{ resena['_id'] }}'">Aceptar</button>
+                        <button class="btn-rechazar" onclick="window.location.href='/rechazar_resena/{{ resena['_id'] }}'">Rechazar</button>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No hay reseñas pendientes por moderar.</p>
+        {% endif %}
     </div>
 </body>
 </html>

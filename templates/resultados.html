@@ -12,12 +12,10 @@
             color: white;
             padding: 20px;
         }
-
         h1, h2 {
             text-align: center;
             color: #4CAF50;
         }
-
         .back-btn {
             display: block;
             margin: 20px auto;
@@ -29,18 +27,16 @@
             border-radius: 5px;
             font-size: 16px;
         }
-
         .back-btn:hover {
             background-color: #45a049;
         }
-
+        .container { margin-bottom: 30px; }
         .scrollable-container {
             max-height: 400px;
             overflow-y: auto;
             margin-bottom: 30px;
         }
-
-        .game-item {
+        .game-item, .card {
             padding: 10px;
             border: 1px solid #555;
             border-radius: 5px;
@@ -48,93 +44,47 @@
             margin-bottom: 10px;
             transition: background-color 0.3s;
         }
-
-        .game-item:hover {
+        .game-item:hover, .card:hover {
             background-color: #3a3a3c;
         }
-
-        .chart-container {
-            margin-bottom: 40px;
-        }
-
-        .row .col-md-6 {
-            margin-bottom: 30px;
-        }
-
-        .card {
-            margin-bottom: 15px;
-            padding: 15px;
-            background-color: #2c2c2e;
-            border: 1px solid #555;
-            border-radius: 5px;
-        }
-
-        .game-list, .comment-list, .hashtag-list {
-            margin-bottom: 20px;
-        }
-
-        .comment-list .card {
-            background-color: #2c2c2e;
-        }
-
-        .hashtag-list .card {
-            background-color: #3a3a3c;
-        }
-
-        .game-item strong {
-            color: #4CAF50;
-        }
+        .chart-container { margin-bottom: 40px; }
+        .card h5 { margin: 0 0 8px; color: #4CAF50; }
+        .card p { margin: 4px 0; }
     </style>
 </head>
 <body>
 
     <h1>Resultados para: {{ juego if juego else 'Todos los juegos' }}</h1>
-
     <a href="/" class="back-btn">Volver a la página principal</a>
 
     <div class="container">
-        <div class="row">
-            <!-- Ventas por Región -->
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <h2>Ventas por Región</h2>
-                    {{ graph_region | safe }}
-                </div>
-            </div>
-
-            <!-- Ventas por Género -->
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <h2>Distribución de Ventas por Género</h2>
-                    {{ graph_genero | safe }}
-                </div>
-            </div>
+        <div class="chart-container">
+            <h2>Ventas por Región</h2>
+            {{ graph_region | safe }}
         </div>
-
-        <div class="row">
-            <!-- Calificaciones -->
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <h2>Comparación de Calificación de Usuarios y Críticos</h2>
-                    {{ graph_calificaciones | safe }}
-                </div>
-            </div>
-
-            <!-- Ventas por Plataforma -->
-            <div class="col-md-6">
-                <div class="chart-container">
-                    <h2>Ventas por Plataforma</h2>
-                    {{ graph_plataforma | safe }}
-                </div>
-            </div>
+        <div class="chart-container">
+            <h2>Distribución de Ventas por Género</h2>
+            {{ graph_genero | safe }}
+        </div>
+        <div class="chart-container">
+            <h2>Comparación de Calificación de Usuarios y Críticos</h2>
+            {{ graph_calificaciones | safe }}
+        </div>
+        <div class="chart-container">
+            <h2>Ventas por Plataforma</h2>
+            {{ graph_plataforma | safe }}
+        </div>
+        <div class="chart-container">
+            <h2>Valoración Media de Usuarios</h2>
+            {{ graph_valoracion | safe }}
         </div>
     </div>
 
     <!-- Lista de Juegos -->
     <h2>Juegos</h2>
     <div class="container scrollable-container game-list">
-        {% if datos.juegos %}
-            {% for juego in datos.juegos %}
+        {% if juegos %}
+            {% for juego in juegos %}
                 <div class="game-item">
                     <strong>{{ juego.nombre }}</strong><br>
                     Plataforma: {{ juego.plataforma }}<br>
@@ -147,15 +97,38 @@
         {% endif %}
     </div>
 
+    <!-- Reseñas de Usuarios -->
+    <h2>Reseñas de Usuarios</h2>
+    <div class="container scrollable-container reseña-list">
+        {% if resenas %}
+            {% for r in resenas %}
+                <div class="card">
+                    <h5>{{ r.name }}</h5>
+                    <p><strong>Autor:</strong> {{ r.autor }}</p>
+                    <p><strong>Fecha:</strong> {{ r.fecha.strftime('%Y-%m-%d') if r.fecha else '—' }}</p>
+                    <p><strong>Comentario:</strong> {{ r.comentario }}</p>
+                    <p><strong>Valoración general:</strong> {{ r.valoracion }} ⭐</p>
+                    <p><strong>Jugabilidad:</strong> {{ r.jugabilidad }}/10</p>
+                    <p><strong>Historia:</strong> {{ r.historia }}/10</p>
+                    <p><strong>Gráficos:</strong> {{ r.graficos }}/10</p>
+                    <p><strong>Sonido:</strong> {{ r.sonido }}/10</p>
+                    <p><strong>Recomendado:</strong> {{ 'Sí' if r.recomendado == 'si' else 'No' }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="text-center text-muted">No hay reseñas disponibles.</p>
+        {% endif %}
+    </div>
+
     <!-- Comentarios -->
     <h2>Comentarios</h2>
     <div class="container scrollable-container comment-list">
-        {% if datos.comentarios %}
-            {% for comentario in datos.comentarios %}
+        {% if comentarios %}
+            {% for comentario in comentarios %}
                 <div class="card">
                     <h5>{{ comentario.name }}</h5>
                     <p><strong>Reseña:</strong> {{ comentario.desc_snippet }}</p>
-                    <p><strong>Reseña Reciente:</strong> {{ comentario.recent_reviews }}</p>
+                    <p><strong>Reseñas Recientes:</strong> {{ comentario.recent_reviews }}</p>
                     <a href="{{ comentario.url }}" target="_blank">Ver en Steam</a>
                 </div>
             {% endfor %}
@@ -167,8 +140,8 @@
     <!-- Hashtags -->
     <h2>Hashtags</h2>
     <div class="container scrollable-container hashtag-list">
-        {% if datos.hashtags %}
-            {% for hashtag in datos.hashtags %}
+        {% if hashtags %}
+            {% for hashtag in hashtags %}
                 <div class="card">
                     <p><strong>Red Social:</strong> {{ hashtag.red_social }}</p>
                     <p><strong>Hashtag:</strong> {{ hashtag.hashtags }}</p>

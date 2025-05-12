@@ -2,9 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>GamePulse - Agregar Detalles de Juego</title>
+    <title>GamePulse - Calificación del Juego</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
     <style>
         body {
             margin: 0;
@@ -12,33 +11,28 @@
             background-color: #1c1c1e;
             color: white;
         }
-
         header {
             background-color: #111;
             text-align: center;
             padding: 40px 20px 20px;
         }
-
         header h1 {
             font-size: 2.5em;
             color: #4CAF50;
             margin: 0;
         }
-
         .container {
-            max-width: 1000px;
+            max-width: 800px;
             margin: 20px auto;
             padding: 20px;
             background-color: #2c2c2e;
             border-radius: 10px;
         }
-
         h2 {
             text-align: center;
             color: #4CAF50;
             margin-bottom: 30px;
         }
-
         .section-title {
             background-color: #4CAF50;
             color: white;
@@ -47,25 +41,21 @@
             margin: 25px 0 15px;
             font-size: 18px;
         }
-
         form {
             display: flex;
             flex-direction: column;
             gap: 20px;
         }
-
         label {
             font-size: 16px;
             color: #ccc;
             display: block;
             margin-bottom: 5px;
         }
-
-        input[type="text"], 
-        input[type="number"], 
-        textarea, 
-        select, 
-        input[type="date"], 
+        input[type="text"],
+        textarea,
+        select,
+        input[type="number"],
         button {
             padding: 10px;
             font-size: 16px;
@@ -78,39 +68,45 @@
             border: 1px solid #555;
             box-sizing: border-box;
         }
-
         textarea {
             min-height: 100px;
             resize: vertical;
         }
-
         button {
             background-color: #4CAF50;
             color: white;
             cursor: pointer;
-            transition: 0.3s;
+            transition: background-color 0.3s;
         }
-
         button:hover {
             background-color: #45a049;
         }
-
-        .row {
+        .stars {
             display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            flex-direction: row-reverse;
+            justify-content: center;
+            gap: 5px;
         }
-
-        .col {
-            flex: 1 1 45%;
+        .stars input {
+            display: none;
         }
-
-        @media (max-width: 768px) {
-            .row {
-                flex-direction: column;
-            }
+        .stars label {
+            font-size: 40px;
+            color: #444;
+            cursor: pointer;
+            transition: color 0.2s;
         }
-
+        .stars label:hover,
+        .stars label:hover ~ label {
+            color: #FFD700;
+        }
+        .stars input:checked ~ label,
+        .stars input:checked ~ label ~ label,
+        .stars input:checked ~ label ~ label ~ label,
+        .stars input:checked ~ label ~ label ~ label ~ label,
+        .stars input:checked ~ label ~ label ~ label ~ label ~ label {
+            color: #FFD700;
+        }
         .nav-buttons {
             display: flex;
             justify-content: space-between;
@@ -124,143 +120,76 @@
     </header>
 
     <div class="container">
-        <h2>Agregar Detalles a Juego Existente</h2>
+        <h2>Calificar Juego</h2>
 
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="mensaje {% if category == 'error' %}error{% endif %}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-
-        <form method="POST" action="/agregar_detalles_juego">
+        <form method="POST" action="/agregar_resena">
+            <!-- Selección de juego -->
             <div class="section-title">Seleccionar Juego</div>
-
             <label for="nombre">Nombre del Juego:</label>
-            <select name="nombre" id="nombre" required>
-                <option value="">Seleccione un juego</option>
+            <input type="text" name="nombre" id="nombre" list="juegos-lista" placeholder="Escribe el nombre del juego..." required>
+            <datalist id="juegos-lista">
                 {% for juego in juegos %}
-                <option value="{{ juego }}">{{ juego }}</option>
+                    <option value="{{ juego }}"></option>
                 {% endfor %}
+            </datalist>
+
+            <!-- Reseña -->
+            <div class="section-title">Tu Reseña</div>
+            <label for="reseña">Reseña:</label>
+            <textarea name="reseña" id="reseña" placeholder="Escribe tu reseña del juego..."></textarea>
+
+            <!-- Estrellas -->
+            <div class="section-title">Calificación</div>
+            <label>Califica el Juego (1 a 5 Estrellas):</label>
+            <div class="stars">
+                <input type="radio" id="estrella5" name="estrellas" value="5"><label for="estrella5">★</label>
+                <input type="radio" id="estrella4" name="estrellas" value="4"><label for="estrella4">★</label>
+                <input type="radio" id="estrella3" name="estrellas" value="3"><label for="estrella3">★</label>
+                <input type="radio" id="estrella2" name="estrellas" value="2"><label for="estrella2">★</label>
+                <input type="radio" id="estrella1" name="estrellas" value="1"><label for="estrella1">★</label>
+            </div>
+
+            <!-- Aspectos -->
+            <div class="section-title">Aspectos del Juego (1–10)</div>
+            <label for="jugabilidad">Jugabilidad:</label>
+            <input type="number" name="jugabilidad" id="jugabilidad" min="1" max="10" placeholder="1–10" required>
+            <label for="historia">Historia:</label>
+            <input type="number" name="historia" id="historia" min="1" max="10" placeholder="1–10" required>
+            <label for="graficos">Gráficos:</label>
+            <input type="number" name="graficos" id="graficos" min="1" max="10" placeholder="1–10" required>
+            <label for="sonido">Sonido:</label>
+            <input type="number" name="sonido" id="sonido" min="1" max="10" placeholder="1–10" required>
+
+            <!-- Recomendación -->
+            <div class="section-title">¿Recomendarías este Juego?</div>
+            <label for="recomendado">¿Lo recomendarías?</label>
+            <select name="recomendado" id="recomendado" required>
+                <option value="">Selecciona una opción</option>
+                <option value="si">Sí</option>
+                <option value="no">No</option>
             </select>
 
-            <div class="section-title">Datos Adicionales</div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="_id">ID:</label>
-                    <input type="text" name="_id" id="_id" placeholder="Ej: 67fd80da13ccb3777c07a512" required>
-                </div>
-                <div class="col">
-                    <label for="url">URL:</label>
-                    <input type="text" name="url" id="url" placeholder="Ej: https://store.steampowered.com/app/379720/DOOM/">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="types">Tipo:</label>
-                    <input type="text" name="types" id="types" placeholder="Ej: app">
-                </div>
-                <div class="col">
-                    <label for="desc_snippet">Descripción Corta:</label>
-                    <textarea name="desc_snippet" id="desc_snippet" placeholder="Breve descripción..."></textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="recent_reviews">Reseñas Recientes:</label>
-                    <textarea name="recent_reviews" id="recent_reviews" placeholder="Ej: Very Positive..."></textarea>
-                </div>
-                <div class="col">
-                    <label for="all_reviews">Todas las Reseñas:</label>
-                    <textarea name="all_reviews" id="all_reviews" placeholder="Ej: Very Positive..."></textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="release_date">Fecha de Lanzamiento:</label>
-                    <input type="text" name="release_date" id="release_date" placeholder="Ej: May 12, 2016">
-                </div>
-                <div class="col">
-                    <label for="developer">Desarrollador:</label>
-                    <input type="text" name="developer" id="developer" placeholder="Ej: id Software">
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="publisher">Publisher:</label>
-                    <input type="text" name="publisher" id="publisher" placeholder="Ej: Bethesda Softworks">
-                </div>
-                <div class="col">
-                    <label for="popular_tags">Etiquetas Populares:</label>
-                    <textarea name="popular_tags" id="popular_tags" placeholder="Ej: FPS,Gore,Action..."></textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="game_details">Detalles del Juego:</label>
-                    <textarea name="game_details" id="game_details" placeholder="Ej: Single-player,Multi-player..."></textarea>
-                </div>
-                <div class="col">
-                    <label for="languages">Idiomas:</label>
-                    <textarea name="languages" id="languages" placeholder="Ej: English,French,German..."></textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="achievements">Logros:</label>
-                    <input type="number" name="achievements" id="achievements" min="0" placeholder="Ej: 54">
-                </div>
-                <div class="col">
-                    <label for="genre">Género:</label>
-                    <input type="text" name="genre" id="genre" placeholder="Ej: Action">
-                </div>
-            </div>
-
-            <label for="game_description">Descripción Completa:</label>
-            <textarea name="game_description" id="game_description" placeholder="Descripción larga del juego..."></textarea>
-
-            <div class="row">
-                <div class="col">
-                    <label for="mature_content">Contenido Maduro:</label>
-                    <input type="text" name="mature_content" id="mature_content" placeholder="Sí/No o NaN">
-                </div>
-                <div class="col">
-                    <label for="minimum_requirements">Requisitos Mínimos:</label>
-                    <textarea name="minimum_requirements" id="minimum_requirements" placeholder="Specs mínimas..."></textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="recommended_requirements">Requisitos Recomendados:</label>
-                    <textarea name="recommended_requirements" id="recommended_requirements" placeholder="Specs recomendadas..."></textarea>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <label for="original_price">Precio Original:</label>
-                    <input type="text" name="original_price" id="original_price" placeholder="Ej: $19.99">
-                </div>
-                <div class="col">
-                    <label for="discount_price">Precio con Descuento:</label>
-                    <input type="text" name="discount_price" id="discount_price" placeholder="Ej: $14.99">
-                </div>
-            </div>
-
+            <!-- Botones -->
             <div class="nav-buttons">
                 <button type="button" onclick="window.location.href='/'">Cancelar</button>
-                <button type="submit">Guardar Detalles</button>
+                <button type="submit">Guardar Reseña</button>
             </div>
         </form>
     </div>
+
+    <script>
+        // Clampa cada input number entre 1 y 10
+        document.querySelectorAll('input[type="number"]').forEach(el => {
+            el.addEventListener('input', () => {
+                let v = parseInt(el.value, 10);
+                if (isNaN(v)) return;
+                if (v < 1) el.value = 1;
+                if (v > 10) el.value = 10;
+            });
+            el.addEventListener('blur', () => {
+                if (el.value === '') el.value = '';
+            });
+        });
+    </script>
 </body>
 </html>
