@@ -49,6 +49,38 @@
             transform: scale(1.1);
         }
 
+        /* ---------- Botones de cabecera ---------- */
+        .logout-button,
+        .profile-button {
+            position: absolute;
+            top: 20px;
+            padding: 10px 20px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .logout-button {
+            right: 20px;
+            background-color: #f44336;
+        }
+        .logout-button:hover {
+            background-color: #e53935;
+        }
+
+        .profile-button {
+            right: 160px; /* Ajustado para mayor separación */
+            background-color: #4CAF50;
+        }
+        .profile-button:hover {
+            background-color: #45a049;
+        }
+        /* ----------------------------------------- */
+
+
         .container {
             max-width: 900px;
             margin: 20px auto;
@@ -115,28 +147,14 @@
             transition: 0.3s;
         }
 
-        .logout-button {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            padding: 10px 20px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            transition: 0.3s;
-        }
-
-        .logout-button:hover {
-            background-color: #e53935;
-        }
+        .logout-button { /* ya definido arriba */ }
+        .profile-button { /* ya definido arriba */ }
     </style>
 </head>
 <body>
     <header>
         <h1>🎮 GamePulse</h1>
+
         <div class="carousel">
             <!-- Imágenes de los juegos locales -->
             <img src="{{ url_for('static', filename='caratulas/call.png') }}" alt="Call of Duty">
@@ -150,6 +168,8 @@
             <img src="{{ url_for('static', filename='caratulas/read.png') }}" alt="Red Dead Redemption 2">
         </div>
         
+        <!-- Botón de Mi Perfil -->
+        <button class="profile-button" onclick="window.location.href='/perfil'">Mi Perfil</button>
         <!-- Botón de Cerrar Sesión -->
         <button class="logout-button" onclick="window.location.href='/logout'">Cerrar sesión</button>
     </header>
@@ -174,12 +194,8 @@
         </form>
 
         <div class="button-container">
-            <button onclick="window.location.href='/formulario-agregar-juego'" style="background-color: #4CAF50;">
-                Agregar Nuevo Juego
-            </button>
-            <button onclick="window.location.href='/formulario-agregar-resena'" style="background-color: #4CAF50;">
-                Agregar Reseña
-            </button>
+            <button onclick="window.location.href='/formulario-agregar-juego'">Agregar Nuevo Juego</button>
+            <button onclick="window.location.href='/formulario-agregar-resena'">Agregar Reseña</button>
         </div>
         
         <!-- Datalist para autocompletado -->

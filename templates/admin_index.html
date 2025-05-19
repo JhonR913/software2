@@ -42,6 +42,12 @@
             z-index: 100;
         }
 
+        .sidebar h2 {
+            color: #4CAF50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
         .sidebar a {
             display: block;
             padding: 15px;
@@ -161,7 +167,8 @@
 <body>
     <!-- Barra lateral -->
     <div class="sidebar">
-        <h2 style="color: #4CAF50;">Administrador</h2>
+        <h2>Administrador</h2>
+        <a href="/perfil">Mi Perfil</a>
         <a href="/registro-usuario">Registrar Nuevo Usuario</a>
         <a href="/ingresos-sesion">Ver Ingresos de Sesión</a>
         <a href="/aceptar-juegos">Aceptar Juegos Pendientes</a>
@@ -214,7 +221,7 @@
                     Agregar Reseña
                 </button>
             </div>
-
+            
             <!-- Datalist para autocompletado -->
             <datalist id="lista-juegos">
                 {% for j in juegos %}

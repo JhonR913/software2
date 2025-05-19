@@ -582,5 +582,90 @@ def rechazar_resena(id):
     flash("Reseña rechazada", "warning")
     return redirect(url_for('aceptar_resenas'))
 
+@app.route("/perfil", methods=["GET", "POST"])
+@login_required
+def perfil():
+    usuario_actual = session["usuario"]
+
+    # 1) Si es POST, procesar actualización de correo/contraseña:
+    if request.method == "POST":
+        nuevo_correo   = request.form.get("correo", "").strip()
+        nueva_pass     = request.form.get("nueva_contraseña", "").strip()
+        confirmar_pass = request.form.get("confirmar_contraseña", "").strip()
+
+        # Actualizar solo el correo
+        db.usuarios.update_one(
+            {"usuario": usuario_actual},
+            {"$set": {"correo": nuevo_correo}}
+        )
+
+        # Si el usuario escribió algo en “nueva_contraseña” y coincide...
+        if nueva_pass:
+            if nueva_pass == confirmar_pass:
+                hash_pwd = generate_password_hash(nueva_pass)
+                db.usuarios.update_one(
+                    {"usuario": usuario_actual},
+                    {"$set": {"contraseña": hash_pwd}}
+                )
+                flash("Contraseña actualizada correctamente", "success")
+            else:
+                flash("Las contraseñas no coinciden", "error")
+
+        flash("Perfil actualizado", "success")
+        return redirect(url_for("perfil"))
+
+    # 2) En GET: obtener datos, juegos y reseñas
+    datos = db.usuarios.find_one(
+        {"usuario": usuario_actual},
+        {"_id": 0, "contraseña": 0}
+    )
+
+    juegos_mios = list(db.juegos.find(
+        {"user_id": usuario_actual},
+        {"_id": 1, "nombre": 1, "plataforma": 1, "genero": 1}
+    ))
+
+    resenas_mias = list(db.resenas_juegos.find(
+        {"user_id": usuario_actual},
+        {"_id": 1, "name": 1, "valoracion": 1, "fecha": 1}
+    ))
+
+    return render_template(
+        "perfil.html",
+        usuario=datos,
+        juegos_mios=juegos_mios,
+        resenas_mias=resenas_mias
+    )
+
+# Ruta para eliminar reseña
+@app.route("/perfil/reseña/eliminar/<review_id>", methods=["POST"])
+@login_required
+def eliminar_resena(review_id):
+    usuario_actual = session["usuario"]
+    resultado = db.resenas_juegos.delete_one({
+        "_id": ObjectId(review_id),
+        "user_id": usuario_actual
+    })
+    if resultado.deleted_count:
+        flash("Reseña eliminada correctamente", "success")
+    else:
+        flash("No se pudo eliminar la reseña", "error")
+    return redirect(url_for("perfil"))
+
+# Ruta para eliminar juego
+@app.route("/perfil/juego/eliminar/<game_id>", methods=["POST"])
+@login_required
+def eliminar_juego(game_id):
+    usuario_actual = session["usuario"]
+    resultado = db.juegos.delete_one({
+        "_id": ObjectId(game_id),
+        "user_id": usuario_actual
+    })
+    if resultado.deleted_count:
+        flash("Juego eliminado correctamente", "success")
+    else:
+        flash("No se pudo eliminar el juego", "error")
+    return redirect(url_for("perfil"))
+
 if __name__ == "__main__":
     app.run(debug=True)

@@ -18,12 +18,32 @@
             background-color: #111;
             padding: 40px 20px 20px;
             text-align: center;
+            position: relative;
         }
 
         header h1 {
             font-size: 2.5em;
             color: #4CAF50;
             margin: 0;
+        }
+
+        /* Botón Volver */
+        .back-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        .back-button:hover {
+            background-color: #45a049;
         }
 
         .container {
@@ -99,6 +119,8 @@
 <body>
 
 <header>
+    <!-- Botón Volver -->
+    <button class="back-button" onclick="window.location.href='/admin_panel'">Volver</button>
     <h1>🎮 GamePulse</h1>
 </header>
 
