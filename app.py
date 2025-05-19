@@ -386,17 +386,44 @@ def registro():
 def login():
     if 'usuario' in session:
         return redirect_by_role()
+
     if request.method == "POST":
         usuario = request.form["usuario"]
         pwd     = request.form.get("contraseña", "")
         user_db = db.usuarios.find_one({"usuario": usuario})
+
         if user_db and check_password_hash(user_db["contraseña"], pwd):
+            # ----------------------------------------------------
+            # 1) Preparamos los campos para el registro de sesión
+            # ----------------------------------------------------
+            ahora = datetime.now()
+            fecha_str = ahora.strftime("%Y-%m-%d")
+            hora_str  = ahora.strftime("%H:%M")
+            ip_cliente = request.remote_addr or "desconocida"
+
+            # ----------------------------------------------------
+            # 2) Insertamos en la colección "registros"
+            # ----------------------------------------------------
+            db.registros.insert_one({
+                "usuario": usuario,
+                "correo":  user_db.get("correo", ""),
+                "fecha":   fecha_str,
+                "hora":    hora_str,
+                "ip":      ip_cliente
+            })
+            # ----------------------------------------------------
+
+            # ----------------------------------------------------
+            # 3) Guardamos la sesión y redirigimos según el rol
+            # ----------------------------------------------------
             session["usuario"] = usuario
             session["rol"]     = user_db.get("rol", "usuario")
             flash(f"Bienvenido, {usuario}", "success")
             return redirect_by_role()
+
         flash("Usuario o contraseña incorrectos", "error")
         return redirect(url_for("login"))
+
     return render_template("login.html")
 
 @app.route("/logout")
@@ -417,6 +444,33 @@ def admin_required(f):
             return redirect(url_for("inicio"))
         return f(*args, **kwargs)
     return decorated_function
+
+
+@app.route("/ingresos-sesion")
+@login_required
+def ingresos_sesion():
+    # 1) Obtenemos todos los documentos de la colección "registros"
+    registros_cursor = db.registros.find().sort([("fecha", -1), ("hora", -1)])
+    
+    # 2) Convertimos el cursor a lista de diccionarios
+    registros = []
+    for r in registros_cursor:
+        # Asegurarnos de convertir la fecha a string YYYY-MM-DD
+        # Si "fecha" está almacenada como ISODate, hacemos:
+        fecha_obj = r.get("fecha")
+        fecha_str = fecha_obj.strftime("%Y-%m-%d") if hasattr(fecha_obj, "strftime") else r.get("fecha", "")
+        
+        registros.append({
+            "usuario": r.get("usuario", ""),
+            "correo":  r.get("correo", ""),
+            "fecha":   fecha_str,
+            "hora":    r.get("hora", ""),
+            "ip":      r.get("ip", "")
+        })
+    
+    # 3) Pasamos esa lista al template
+    return render_template("registros.html", registros=registros)
+
 
 @app.route("/registro-usuario", methods=["GET", "POST"])
 @admin_required
@@ -445,11 +499,6 @@ def registrar_usuario():
     # Mostrar lista de usuarios
     usuarios = list(db.usuarios.find({}, {"_id": 0, "usuario": 1, "correo": 1, "rol": 1}))
     return render_template("registro_admin.html", usuarios=usuarios)
-
-@app.route("/ingresos-sesion")
-@login_required
-def ingresos_sesion():
-    return render_template('registros.html')
 
 # Moderación de Juegos Pendientes
 @app.route('/aceptar-juegos', methods=['GET'])

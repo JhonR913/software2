@@ -78,22 +78,20 @@
                 </tr>
             </thead>
             <tbody>
-                <!-- Fila de ejemplo -->
+                {# Recorremos la lista "registros" que envía Flask #}
+                {% for r in registros %}
                 <tr>
-                    <td>admin1</td>
-                    <td>admin@example.com</td>
-                    <td>2025-05-05</td>
-                    <td>14:32</td>
-                    <td>192.168.1.100</td>
+                    <td>{{ r.usuario }}</td>
+                    <td>{{ r.correo }}</td>
+                    <td>{{ r.fecha }}</td>
+                    <td>{{ r.hora }}</td>
+                    <td>{{ r.ip }}</td>
                 </tr>
+                {% else %}
                 <tr>
-                    <td>usuario2</td>
-                    <td>user2@example.com</td>
-                    <td>2025-05-04</td>
-                    <td>09:20</td>
-                    <td>192.168.1.120</td>
+                    <td colspan="5">No hay registros disponibles.</td>
                 </tr>
-                <!-- Aquí se mostrarán dinámicamente los registros reales -->
+                {% endfor %}
             </tbody>
         </table>
     </div>
